@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="value1" value="100">
+    <input type="text" id="value2" value="200">
+    <input type="text" id="value3" value="">
+    <select id="operator">
+        <option value="+">+</option>
+        <option value="-">-</option>
+        <option value="*">*</option>
+        <option value="/">/</option>
+    </select>
+    <button id="btn">BUTTON</button>
+
+    <script>
+        var input1 = document.getElementById('value1');
+        var input2 = document.getElementById('value2');
+        var input3 = document.getElementById('value3');
+        var operator = document.getElementById('operator')
+        // var input3 = input1.value + input2.value
+        var btn = document.getElementById('btn');
+        //
+
+
+        // function printvalue(){
+        //     console.log(input1.value);
+        //     console.log(input2.value);
+        //     console.log(Number(input1.value) + Number(input2.value));
+        // }
+        // btn.onclick = printvalue;
+
+        btn.onclick = function() {
+            var var1 = parseInt(input1.value);
+            var var2 = parseInt(input2.value);
+            var select = operator.value;
+            var result;
+
+            switch(select) {
+                case '+':
+                    result = var1 + var2
+                    break;
+                case '-':
+                    result = var1 - var2
+                    break;
+                case '*':
+                    result = var1 * var2
+                    break;
+                case '/':
+                    result = var1 / var2
+                    break;
+            }
+            input3.value = result;
+
+        }
+
+
+
+
+    </script>
+
+</body>
+</html>

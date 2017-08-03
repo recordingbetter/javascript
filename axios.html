@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>AJAX</title>
+</head>
+<body>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- <script src="node_modules/axios/lib/axios.js"></script> -->
+    <script>
+        var url = 'http://localhost:8000/api/post/';
+        var next;
+        var isEnd = false;
+
+        getPostList();
+
+        function getPostList(pageNum) {
+            var curUrl = url;
+            if(next != undefined) {
+                curUrl = next;
+            }
+            if(isEnd) {
+                alert('마지막입니다.');
+                return;
+            }
+            axios.get(curUrl)
+                .then(function(response){
+                    if(response.data.next != null && response.data.next != undifined) {
+                        next = response.data.next;
+                    } else {
+                        isEnd = true;
+                    }
+                    var postList = response.data.results;
+                    for (var i = 0; i < postList.length; i++) {
+                        createPost(postList[i]);
+                    }
+                })
+                .catch(function(error){
+                    console.log(error);
+                })
+        }
+
+        function createPost(post) {
+            var div = document.createElement('div');
+            // 생성한 div내부의 HTML에 h1과 img태그를 추가
+            div.innerHTML = '<h1>[PK:' + post.pk + ']' + post.author.username + '</h1>';
+            div.innerHTML += '<img src="' + post.photo + '" width=100>'
+            // 생성한 div를 body 태그의 자식으로 추가
+            document.body.appendChild(div);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>AJAX</title>
+</head>
+<body>
+    <script>
+        // localhost:8000/api/post/에 GET 요청을 보내고 결과를 console.log에 출력
+        //함수 지정
+        var httpRequest;
+        //브라우저에 따라 다르게 인스턴스 생성
+        if (window.XMLHttpRequest) { //모질라, 사파리 등..
+            httpRequest = new XMLHttpRequest();
+        } else if (window.ActiveXObject) { //IE..
+            httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        // state가 변경될때마다 실행할 함수
+        // httpRequest.onreadystatechange = function(){
+        //     if(httpRequest.readyState == 4) {
+
+                // 대화상자 띄우기
+                // alert("post list는 콘솔에 보여집니다.")
+                // var confirmation = confirm("post list는 콘솔에 보여집니다.\n내용을 확인하셨습니까?");
+                // if (confirmation){
+                //     alert("'확인'을 누르셨습니다!");
+                // }else{
+                //     alert("'취소'를 누르셨습니다!");
+                // }
+
+            // // 각 post를 순회할때마다 하나의 div요소를 만들어 document에 추가
+        // httpRequest.onreadystatechange = function(){
+        //     if(httpRequest.readyState == 4) {
+
+                // var postlist = JSON.parse(httpRequest.responseText);
+                // var text = document.createElement("div");
+                // for (var i = 0; i < postlist.length; i++) {
+                //     console.log(postlist[i]);
+                //     var posts = postlist[i];
+                //     document.write(posts.pk, "</br>");
+                //     document.write("<img src=", posts.photo, " width='100'> </br>")
+                //     document.write("<font color='red'>", posts.author.username, "</font></br>");
+
+
+            // 각 post를 순회할때마다 하나의 div요소를 만들어 document에 추가 - class
+            httpRequest.onreadystatechange = function(){
+                if (httpRequest.status == 200) {
+                    if(httpRequest.readyState == 4) {
+                        var postlist = JSON.parse(httpRequest.responseText);
+                        // console.log(postlist[i]);
+                        for(var i = 0; i < postlist.length; i++) {
+                            // console.log(postlist[i]);
+                            var curPost = postlist[i];
+                            var div = document.createElement('div');
+                            // 생성한 div내부의 HTML에 h1과 img태그를 추가
+                            div.innerHTML = '<h1>[PK:' + curPost.pk + ']' + curPost.author.username + '</h1>';
+                            div.innerHTML += '<img src="' + curPost.photo + '" width=100>'
+                            // 생성한 div를 body 태그의 자식으로 추가
+                            document.body.appendChild(div);
+                        }
+
+                    }
+                } else {
+                    console.log('request error');
+                    console.log(httpRequest.response);
+
+                    }
+            }
+
+
+
+                // post list를 콘솔에 1개씩 출력
+                // var postlist = JSON.parse(httpRequest.responseText);
+                // for (var i = 0; i < postlist.length; i++) {
+                //     console.log(postlist[i]);
+                // }
+
+                // postlist에 GET 요청한 응답을 콘솔에 출력
+                // console.log(httpRequest.responseText);
+        //     }
+        // };
+        // GET 요청을 보냄
+        httpRequest.open('GET', 'http://localhost:8000/api/post/', true);
+        httpRequest.send();
+
+    </script>
+
+</body>
+</html>
+<!--
+/*
+같은 도메인에서만 요청을 할 수 있다.(보안 상의 이유)
+
+Cross Origin Resource Sharing (CORS)
+- 요청, 응답을 할수 있는 도메인을 미리 허용해둔다.
+
+OPTION 매서드 - 요청가능항 매서드를 응답
+
+아래 내용을 항상 보내줘야 한다.
+Access-Control-Allow...
+Access-Control-Allow
+Access-Control-Allow
+Access-Control-Max-Age
+
+미들웨어를 사용
+Request <-> Middleware(CORS 헤더 추가) <-> Response
+라이브러리 (끝까지 따라해야함... 핸들러 등..)
+https://github.com/ottoyiu/django-cors-headers
+
+JS HTTP 라이브러리 axios를 사용하도록 리펙토링
+
+*/ -->
