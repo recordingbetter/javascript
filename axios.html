@@ -5,34 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>AJAX</title>
+    <script src="node_modules/axios/dist/axios.js"></script>
 </head>
 <body>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <!-- <script src="node_modules/axios/lib/axios.js"></script> -->
+    <!-- script에서 생성된 태그들을 여기에 넣음 -->
+    <div id="content"></div>
+    <!-- 페이지 로드 버튼 -->
+    <button id="more">더보기</button>
+
     <script>
+        // 더보기 버튼
+        var moreBtn = document.getElementById('more');
+        moreBtn.onclick = getPostList;
+
         var url = 'http://localhost:8000/api/post/';
         var next;
         var isEnd = false;
 
-        getPostList();
+        // getPostList();
 
         function getPostList(pageNum) {
             var curUrl = url;
+            //next 값이 있으면 curUrl을 next 값으로 지정
             if(next != undefined) {
                 curUrl = next;
             }
+            // 마지막 page일 경우
             if(isEnd) {
                 alert('마지막입니다.');
+                moreBtn.style.display = 'none';
                 return;
             }
+
             axios.get(curUrl)
                 .then(function(response){
-                    if(response.data.next != null && response.data.next != undifined) {
+                    console.log(response.data);
+                    if(response.data.next != null && response.data.next != undefined) {
                         next = response.data.next;
                     } else {
                         isEnd = true;
                     }
                     var postList = response.data.results;
+
                     for (var i = 0; i < postList.length; i++) {
                         createPost(postList[i]);
                     }
@@ -43,6 +57,7 @@
         }
 
         function createPost(post) {
+            var content = document.getElementById('content');
             var div = document.createElement('div');
             // 생성한 div내부의 HTML에 h1과 img태그를 추가
             div.innerHTML = '<h1>[PK:' + post.pk + ']' + post.author.username + '</h1>';

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="node_modules/vue/dist/vue.js"></script>
+  <script src="node_modules/axios/dist/axios.js"></script>
+</head>
+<body>
+  <div id="app">
+      <img v-for="post in postList" v-bind:src="post.photo" alt="" width="50%">
+    <button v-on:click="getPostList">더보기</button>
+  </div>
+<script>
+var app = new Vue({
+  el: '#app',
+  data: {
+    url: 'http://localhost:8000/api/post/',
+    next: undefined,
+    isEnd: false,
+    postList: []
+  },
+  methods: {
+    getPostList: function() {
+      var curUrl = this.url;
+      if(this.next != undefined) {
+        curUrl = this.next;
+      }
+      axios.get(curUrl)
+        .then(function(response) {
+          app.postList = app.postList.concat(response.data.results);
+        })
+    }
+  }
+})
+var url = 'http://localhost:8000/api/post/';
+var next;
+var isEnd = false;
+
+function getPostList() {
+  var curUrl = url;
+  if(next != undefined) {
+    curUrl = next;
+  }
+  if(isEnd) {
+    alert('마지막입니다');
+    moreBtn.style.display = 'none';
+    return;
+  }
+  axios.get(curUrl)
+    .then(function(response) {
+      if(response.data.next != null && response.data.next != undefined) {
+        next = response.data.next;
+      } else {
+        isEnd = true;
+      }
+      var postList = response.data.results;
+      for (var i = 0; i < postList.length; i++) {
+        createPost(postList[i]);
+      }
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+}
+</script>
+</body>
+</html>
